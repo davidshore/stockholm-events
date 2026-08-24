@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
+import { EventInsights } from "@/components/event-insights";
+import { WeatherPromotion } from "@/components/weather-promotion";
 import {
   EVENT_CATEGORIES,
   filterEvents,
@@ -17,16 +19,12 @@ export function EventsExplorer({ events }: { events: StockholmEvent[] }) {
   const [query, setQuery] = useState("");
   const [category, setCategory] = useState<EventCategoryFilter>("Alla");
   const [showHeroImage, setShowHeroImage] = useState(false);
-  const [showPromotion, setShowPromotion] = useState(false);
+  const [showInsights, setShowInsights] = useState(false);
 
   useEffect(() => {
     const heroTimer = window.setTimeout(() => setShowHeroImage(true), 450);
-    const promotionTimer = window.setTimeout(() => setShowPromotion(true), 1_500);
 
-    return () => {
-      window.clearTimeout(heroTimer);
-      window.clearTimeout(promotionTimer);
-    };
+    return () => window.clearTimeout(heroTimer);
   }, []);
 
   const visibleEvents = useMemo(
@@ -62,13 +60,7 @@ export function EventsExplorer({ events }: { events: StockholmEvent[] }) {
         </div>
       </section>
 
-      {showPromotion ? (
-        <aside className="promotion">
-          <strong>Helgtips!</strong>
-          <span>Tre gratis upplevelser har lagts till i kalendern.</span>
-          <a href="#events">Visa veckans urval</a>
-        </aside>
-      ) : null}
+      <WeatherPromotion />
 
       <section className="events-section" id="events">
         <header className="section-heading">
@@ -76,7 +68,16 @@ export function EventsExplorer({ events }: { events: StockholmEvent[] }) {
             <p className="eyebrow">Veckans urval</p>
             <h2>Events i Stockholm</h2>
           </div>
-          <p>{visibleEvents.length} träffar</p>
+          <div className="section-heading-actions">
+            <p>{visibleEvents.length} träffar</p>
+            <button
+              aria-expanded={showInsights}
+              onClick={() => setShowInsights((isVisible) => !isVisible)}
+              type="button"
+            >
+              {showInsights ? "Dölj veckans puls" : "Visa veckans puls"}
+            </button>
+          </div>
         </header>
 
         <div className="filters" aria-label="Filtrera events">
@@ -104,6 +105,8 @@ export function EventsExplorer({ events }: { events: StockholmEvent[] }) {
             ))}
           </div>
         </div>
+
+        {showInsights ? <EventInsights events={visibleEvents} /> : null}
 
         {visibleEvents.length > 0 ? (
           <div className="events-grid">
