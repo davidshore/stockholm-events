@@ -12,7 +12,7 @@ mäta → diagnostisera → förändra → mäta igen
 ```
 
 Du ska följa bevisen i Lighthouse och Chrome DevTools. Ändra inte saker bara
-för att de *brukar* vara bra för prestanda; försök först förklara vilket
+för att de _brukar_ vara bra för prestanda; försök först förklara vilket
 problem förändringen ska lösa.
 
 ---
@@ -34,23 +34,26 @@ Efter uppgiften ska du kunna:
 
 De nuvarande gränserna för en “god” användarupplevelse är:
 
-| Metric | Mäter | God |
-| --- | --- | --- |
-| LCP | När sidans viktigaste synliga innehåll visas | ≤ 2,5 s |
-| INP | Hur snabbt sidan svarar efter interaktioner | ≤ 200 ms |
-| CLS | Oväntade förflyttningar i layouten | ≤ 0,1 |
+| Metric | Mäter                                        | God      |
+| ------ | -------------------------------------------- | -------- |
+| LCP    | När sidans viktigaste synliga innehåll visas | ≤ 2,5 s  |
+| INP    | Hur snabbt sidan svarar efter interaktioner  | ≤ 200 ms |
+| CLS    | Oväntade förflyttningar i layouten           | ≤ 0,1    |
 
 För fältdata bedöms målen vid den 75:e percentilen av verkliga sidvisningar.
 Läs mer i [Googles beskrivning av Core Web Vitals och gränsvärden](https://web.dev/articles/defining-core-web-vitals-thresholds).
 
 ---
 
-## 1. Skapa ditt repository
+## 1. Starta uppgiften i Codington
 
-1. Klicka på **Use this template** på GitHub.
-2. Välj **Create a new repository**.
-3. Skapa ett publikt repository på ditt personliga GitHub-konto.
-4. Klona ditt nya repository.
+1. Öppna uppgiften **Mobile Performance Makeover – Stockholm Events** i
+   Codington.
+2. Anslut ditt GitHub-konto om Codington ber dig göra det.
+3. Välj **Starta uppgift**. Codington skapar då ett privat repository åt dig i
+   skolans GitHub-organisation.
+4. Öppna repositoryt och acceptera GitHub-inbjudan om den visas.
+5. Klona ditt repository till datorn.
 
 Installera och starta projektet:
 
@@ -59,21 +62,15 @@ npm install
 npm run dev
 ```
 
-Öppna [http://localhost:3000](http://localhost:3000).
-
-Projektet använder Node.js 20.9 eller senare. Node.js 22 rekommenderas.
-
 ### Föreslagen arbetsplan
 
-| Tid | Arbete |
-| --- | --- |
-| 09:00–09:30 | Kör baslinjemätningar och dokumentera problemen |
-| 09:30–10:45 | Optimera LCP och resursladdning |
-| 10:45–12:00 | Åtgärda CLS och förbättra mobillayouten |
-| 13:00–14:15 | Undersök och förbättra interaktionsprestanda |
-| 14:15–14:45 | Publicera på Vercel och aktivera Speed Insights |
-| 14:45–15:30 | Testa klasskamraters appar på riktiga telefoner |
-| 15:30–16:00 | Gör slutmätningar och färdigställ README och inlämning |
+- Kör baslinjemätningar och dokumentera problemen
+- Optimera LCP och resursladdning
+- Åtgärda CLS och förbättra mobillayouten
+- Undersök och förbättra interaktionsprestanda
+- Publicera på Vercel och aktivera Speed Insights
+- Testa klasskamraters appar på riktiga telefoner
+- Gör slutmätningar och färdigställ README och inlämning
 
 ## 2. Bekanta dig med appen
 
@@ -93,22 +90,24 @@ ovan ska finnas kvar efter dina optimeringar.
 Öppna sidan i Chrome och använd mobil simulering. Kör Lighthouse med samma
 inställningar varje gång så att före- och efterresultaten går att jämföra.
 
+Gör detsamma med Performance-tabben i Chrome dev tools.
+[Chrome Performance-panelen](https://developer.chrome.com/docs/devtools/performance/overview)
+
 Gör gärna tre körningar och använd ett representativt resultat. Stäng andra
 tunga flikar och skriv ner vilka inställningar du använde.
 
 Fyll i kolumnen **Före**:
 
-| Mätning | Före | Efter |
-| --- | ---: | ---: |
-| Lighthouse Performance |  |  |
-| LCP |  |  |
-| CLS |  |  |
-| TBT |  |  |
+| Mätning                | Före | Efter |
+| ---------------------- | ---: | ----: |
+| Lighthouse Performance |      |       |
+| LCP                    |      |       |
+| CLS                    |      |       |
+| INP                    |      |       |
+| TBT                    |      |       |
 
 Lägg även till:
 
-- datum och Chrome-version
-- vald enhet/viewport
 - CPU- och nätverksinställning
 - vilken sida du testade
 - vilket element Lighthouse identifierade som LCP
@@ -116,10 +115,6 @@ Lägg även till:
 > Lighthouse kan inte ge en riktig fält-INP från en vanlig sidladdning. Använd
 > TBT som en labbsignal och skapa sedan en lokal INP genom att söka, filtrera
 > och öppna event medan du spelar in i Performance-panelen.
-
-[Chrome Performance-panelen](https://developer.chrome.com/docs/devtools/performance/overview)
-visar lokal LCP, CLS och INP och hjälper dig hitta långkörande arbete och
-layoutförflyttningar.
 
 ## 4. Diagnostisera innan du ändrar
 
@@ -194,11 +189,23 @@ relevanta förbättringar – inte på att nå poängen 100.
 
 ## 7. Publicera på Vercel
 
-1. Importera ditt GitHub-repository i Vercel.
-2. Publicera appen.
+Repositoryt ägs av skolans GitHub-organisation och är privat. Publicera därför
+från projektmappen med Vercel CLI i stället för att importera repositoryt via
+Vercels GitHub-integration.
+
+1. Logga in och publicera en produktionsversion från projektets rot:
+
+   ```bash
+   npx vercel login
+   npx vercel --prod
+   ```
+
+2. Följ frågorna i terminalen. Kommandot skapar och länkar ett Vercel-projekt
+   utan att GitHub-repositoryt behöver importeras.
 3. Kontrollera startsidan och minst en detaljsida på en riktig telefon.
-4. Aktivera Vercel Speed Insights.
-5. Lägg in den publika Vercel-länken i README.
+4. Aktivera Vercel Speed Insights och lägg till paketet och komponenten enligt
+   Vercels guide.
+5. Lägg in den publika Vercel-länken tydligt i README och pusha förändringen.
 
 Följ [Vercels guide för Speed Insights](https://vercel.com/docs/speed-insights/package).
 Speed Insights börjar samla fältdata från riktiga besök, men ett litet nytt
@@ -209,9 +216,9 @@ CrUX bygger normalt på ett rullande 28-dagarsfönster och kan sakna data för
 sidor med lite trafik. Läs
 [skillnaden mellan labb- och fältdata](https://web.dev/articles/lab-and-field-data-differences).
 
-## 8. Peer testing
+## 8. Testa en klasskompis sajt
 
-Testa minst en klasskamrats publicerade app på en riktig telefon:
+Testa minst en klasskompis publicerade app på en riktig telefon:
 
 - ladda startsidan
 - scrolla genom eventlistan
@@ -221,25 +228,6 @@ Testa minst en klasskamrats publicerade app på en riktig telefon:
 Skriv en kort observation om vad som kändes snabbt, långsamt eller instabilt.
 Det är interaktionerna – inte bara första sidladdningen – som gör fältdata
 användbar.
-
-## 9. GitHub Actions
-
-Varje push kör automatiskt:
-
-```bash
-npm run lint
-npm run test
-npm run build
-```
-
-Kontrollerna säkerställer att grundfunktionerna finns kvar och att appen går
-att bygga. De mäter inte Lighthouse och sätter inget betyg på din prestanda.
-
-Ändra eller ta inte bort `.github/workflows/checks.yml`. Codington använder
-workflow-resultatet för att visa om kontrollerna körs, har lyckats eller har
-misslyckats.
-
-Kör samma kontroller lokalt före inlämning.
 
 ---
 
@@ -255,11 +243,12 @@ För Godkänt ska du:
 - bevara sökning, kategorifilter, eventkort och detaljsidor
 - aktivera Vercel Speed Insights
 - ha gröna GitHub Actions-kontroller
-- lämna in både GitHub- och Vercel-länk i Codington
+- lämna in det Codington-skapade repositoryt och dokumentera Vercel-länken i
+  README
 
-# Högre betyg
+# För VG
 
-För högre betyg ska du dessutom:
+För VG ska du dessutom:
 
 - använda Performance-panelen för att peka ut en specifik rendering- eller
   huvudtrådsflaskhals
@@ -274,8 +263,9 @@ För högre betyg ska du dessutom:
 
 Lämna in följande i Codington:
 
-1. Länk till ditt publika GitHub-repository.
-2. Länk till din Vercel-deployment.
+1. Det privata GitHub-repository som Codington har skapat och kopplat till
+   uppgiften.
+2. En README med länk till din Vercel-deployment.
 3. En README med före/efter-tabell, diagnos, förändringar och reflektion.
 
 ## Success ✅
