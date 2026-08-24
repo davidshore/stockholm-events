@@ -63,8 +63,6 @@ dina ändringar.
 Mät en produktionsversion. Utvecklingsläget innehåller extra kod och ger därför
 inte en rättvis Lighthouse-mätning.
 
-Alla tre delarna 2A–2C ingår i kraven för Godkänt.
-
 ```bash
 npm run build
 npm start
@@ -127,8 +125,6 @@ Gör en hård omladdning med samma mobilinställningar.
 
 Skriv om **Disable cache** var aktivt. Inställningen påverkar browsercachen,
 men inte automatiskt cache på servern, i ett CDN eller hos det externa API:t.
-
-För G ska du både mäta detta och genomföra förbättringarna i steg 4B och 4C.
 
 ## Steg 3: Diagnostisera
 
