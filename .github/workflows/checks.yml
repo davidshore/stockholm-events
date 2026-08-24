@@ -13,9 +13,9 @@ concurrency:
 
 jobs:
   verify:
-    name: Test and build
+    name: Test, build and autograde
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 15
 
     steps:
       - name: Check out repository
@@ -41,3 +41,44 @@ jobs:
         env:
           NEXT_TELEMETRY_DISABLED: 1
 
+      - name: Install Chromium for mobile grading
+        run: npx playwright install --with-deps chromium
+
+      - name: Automatic G checks — code and deployment
+        id: grade_g_code
+        continue-on-error: true
+        run: npm run grade:g
+
+      - name: Automatic G checks — mobile
+        id: grade_g_mobile
+        continue-on-error: true
+        run: npm run grade:g:browser
+
+      - name: Automatic VG checks
+        id: grade_vg
+        continue-on-error: true
+        run: npm run grade:vg
+
+      - name: Write grading summary
+        if: always()
+        run: |
+          {
+            echo "## Automatisk rättning"
+            echo
+            echo "| Nivå | Resultat |"
+            echo "| --- | --- |"
+            echo "| G: kod, API och deployment | ${{ steps.grade_g_code.outcome }} |"
+            echo "| G: mobil | ${{ steps.grade_g_mobile.outcome }} |"
+            echo "| VG: Server Component och Suspense | ${{ steps.grade_vg.outcome }} |"
+            echo
+            echo "Mätvärden och resonemang bedöms manuellt."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Require automatic G checks
+        if: always()
+        run: |
+          if [[ "${{ steps.grade_g_code.outcome }}" != "success" ||
+                "${{ steps.grade_g_mobile.outcome }}" != "success" ]]; then
+            echo "En eller flera automatiska G-kontroller misslyckades."
+            exit 1
+          fi

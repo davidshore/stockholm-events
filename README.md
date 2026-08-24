@@ -63,6 +63,8 @@ dina ändringar.
 Mät en produktionsversion. Utvecklingsläget innehåller extra kod och ger därför
 inte en rättvis Lighthouse-mätning.
 
+Alla tre delarna 2A–2C ingår i kraven för Godkänt.
+
 ```bash
 npm run build
 npm start
@@ -126,6 +128,8 @@ Gör en hård omladdning med samma mobilinställningar.
 Skriv om **Disable cache** var aktivt. Inställningen påverkar browsercachen,
 men inte automatiskt cache på servern, i ett CDN eller hos det externa API:t.
 
+För G ska du både mäta detta och genomföra förbättringarna i steg 4B och 4C.
+
 ## Steg 3: Diagnostisera
 
 Skriv minst tre observationer innan du ändrar koden.
@@ -153,7 +157,9 @@ Prioritera problemen som dina mätningar visar.
 
 ## Steg 4: Förbättra appen
 
-Gör minst tre meningsfulla förbättringar. Tillsammans ska de beröra:
+### 4A. LCP, CLS, interaktion och mobil
+
+Gör meningsfulla förbättringar som tillsammans berör:
 
 - laddning och LCP
 - layoutstabilitet och CLS
@@ -172,30 +178,29 @@ Den färdiga mobilvyn ska:
 - använda CSS för responsivitet
 - fungera utan horisontell desktop-scroll
 
-### Optimera JavaScript
+### 4B. Optimera JavaScript
 
 Diagrammet **Veckans puls** använder ett tredjepartsbibliotek.
 
 1. Visa med Network eller Coverage om biblioteket laddas vid sidstart.
 2. Inför code splitting vid en meningsfull gräns.
 3. Mät initial JavaScript före och efter.
-4. Kontrollera också upplevelsen första gången diagrammet öppnas.
+4. Kontrollera upplevelsen första gången diagrammet öppnas.
 5. Förklara avvägningen mellan mindre initial JS och väntan vid första
    interaktionen.
 
 Du ska inte dynamiskt importera varje liten komponent. Välj en gräns som
 mätningen motiverar.
 
-### Optimera API och cache
+### 4C. Optimera API och cache
 
 Vädernotisen går via `/api/weather` till ett externt API.
 
-1. Mät ett första och ett efterföljande anrop.
-2. Bestäm hur färsk väderinformationen behöver vara.
-3. Inför en cachepolicy som matchar det behovet.
-4. Verifiera att cachen faktiskt används.
-5. Hantera fel och ett otillgängligt API utan att eventlistan slutar fungera.
-6. Förklara avvägningen mellan snabbhet, färskhet och API-belastning.
+1. Bestäm hur färsk väderinformationen behöver vara.
+2. Inför en cachepolicy som matchar behovet.
+3. Verifiera policyn med ett första och ett efterföljande anrop.
+4. Hantera ett otillgängligt API utan att eventlistan slutar fungera.
+5. Förklara avvägningen mellan snabbhet, färskhet och API-belastning.
 
 ## Steg 5: Verifiera ändringarna
 
@@ -206,6 +211,27 @@ npm test
 npm run lint
 npm run build
 ```
+
+### Automatisk rättning
+
+Vid varje push kör GitHub Actions projektets vanliga tester och några tekniska
+G-kontroller. Startkoden ska inte klara alla rättningskontroller – de blir
+gröna när prestandaproblemen åtgärdas.
+
+Kör samma kontroller lokalt:
+
+```bash
+npm run grade:g
+npx playwright install chromium # behövs bara första gången
+npm run grade:g:browser          # körs efter npm run build
+```
+
+G-kontrollerna testar bland annat hero-bilden, bildutrymme, huvudtrådsarbetet,
+mobilbredd, kärnfunktioner, code splitting, API-cache, Speed Insights och
+Vercel-länken. En G-inlämning ska ha gröna GitHub Actions.
+
+Automatiken kan inte avgöra om dina mätningar och resonemang är bra. Lighthouse,
+Performance-inspelningen och README-reflektionen bedöms därför manuellt.
 
 Kontrollera sedan att:
 
@@ -223,7 +249,7 @@ Förklara kort:
 - **LCP:** Vad var orsaken, vad ändrade du och vad blev resultatet?
 - **CLS:** Vad flyttade sig och hur reserveras utrymmet nu?
 - **Interaktion:** Vad blockerade huvudtråden och hur förändrades resultatet?
-- **JavaScript/API:** Vad laddas eller cachas annorlunda?
+- **JavaScript/API:** Vad laddas eller cachas annorlunda och vad blev resultatet?
 
 Du bedöms på diagnos och resonemang, inte på att nå poängen 100.
 
@@ -271,8 +297,8 @@ Lägg till följande i README:
 - minst tre observationer
 - vilka förändringar du gjorde och varför
 - resultat efter varje förändring
-- skillnaden mellan labbdata och fältdata
-- minst en avvägning mellan design, funktion och prestanda
+- jämförelse av JavaScript före och efter code splitting
+- vald cachepolicy och resultat för väderanropet
 - observationen från klasskompisens app
 
 Lämna sedan in det Codington-skapade repositoryt.
@@ -285,11 +311,67 @@ Lämna sedan in det Codington-skapade repositoryt.
 - användbar mobil layout utan horisontell scroll
 - jämförbara före- och eftermätningar
 - relevanta förbättringar av LCP, CLS och interaktion
-- minst en dokumenterad observation om JavaScript eller API-anrop
+- dokumenterad interaktionsinspelning från Performance-panelen
+- dokumenterad initial JavaScript-laddning och väderanrop
+- motiverad code-splitting-gräns för diagrammet
+- införd och verifierad cachepolicy för väder-API:t
 - förklaring av problem, förändring och resultat
 - bevarad sökning, filtrering, eventlista och detaljsidor
 - aktiverad Vercel Speed Insights
 - gröna GitHub Actions-kontroller
+
+---
+
+## Fördjupning för VG
+
+Gör först hela G-delen ovan. Fortsätt sedan med följande steg.
+
+### VG steg 1: Undersök en specifik flaskhals
+
+1. Öppna en inspelning från Performance-panelen.
+2. Peka ut en specifik lång task, rendering eller funktion.
+3. Förklara vad som startar arbetet och hur användaren påverkas.
+4. Genomför en relevant förbättring.
+5. Visa samma interaktion före och efter förändringen.
+
+Det räcker inte att skriva att sidan har "för mycket JavaScript". Koppla
+resonemanget till en konkret del av inspelningen och koden.
+
+### VG steg 2: Ta bort vädrets klient-side request waterfall
+
+I startlösningen hämtas vädernotisen från klienten efter hydration. För VG ska
+du undersöka och förbättra den request-kedjan.
+
+1. Visa i Network när anropet till `/api/weather` startar och vad som måste
+   hända före det.
+2. Flytta väderhämtningen från `useEffect` till servern.
+3. Rendera vädernotisen som en Server Component bakom `Suspense`, så att resten
+   av sidan inte behöver vänta på API:t.
+4. Använd en fallback som reserverar utrymme och inte orsakar CLS.
+5. Behåll felhantering så att eventlistan fungerar när API:t är nere.
+6. Jämför request-kedja, initial JavaScript och CLS före och efter.
+
+### VG steg 3: Fördjupa mätningen och reflektionen
+
+1. Kör mobilmätningen minst tre gånger före och efter.
+2. Redovisa ett representativt resultat och förklara hur du valde det.
+3. Förklara skillnaden mellan dina labbmätningar och fältdata från riktiga
+   besökare.
+4. Beskriv minst en avvägning mellan design, funktion och prestanda.
+
+### VG steg 4: Verifiera
+
+Kör den automatiska VG-kontrollen:
+
+```bash
+npm run grade:vg
+```
+
+Resultatet visas även i GitHub Actions-sammanfattningen. Ett misslyckat
+VG-resultat gör inte en godkänd G-inlämning röd.
+
+Automatiken kontrollerar Server Component- och Suspense-lösningen. Flaskhalsen,
+mätningarna, den layoutstabila fallbacken och resonemanget bedöms manuellt.
 
 ## Krav för VG
 
@@ -297,8 +379,8 @@ Alla krav för Godkänt samt:
 
 - en specifik rendering- eller huvudtrådsflaskhals visad i
   Performance-panelen
-- mätt JavaScript-bloat och en motiverad code-splitting-gräns
-- införd och verifierad cachepolicy för det externa API:t
+- väderhämtning flyttad från klienten till en Server Component bakom Suspense
+- en layoutstabil fallback medan väderinformationen laddas
 - flera mobilmätningar med ett representativt resultat
 - resonemang om labbdata jämfört med fältdata
 - minst en förklarad avvägning mellan design, funktion och prestanda
