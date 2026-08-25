@@ -320,9 +320,7 @@ Lämna sedan in det Codington-skapade repositoryt.
 
 ## Fördjupning för VG
 
-Gör först hela G-delen ovan. Fortsätt sedan med följande steg.
-
-### VG steg 1: Undersök en specifik flaskhals
+### 1: Undersök en specifik flaskhals
 
 1. Öppna en inspelning från Performance-panelen.
 2. Peka ut en specifik lång task, rendering eller funktion.
@@ -333,7 +331,7 @@ Gör först hela G-delen ovan. Fortsätt sedan med följande steg.
 Det räcker inte att skriva att sidan har "för mycket JavaScript". Koppla
 resonemanget till en konkret del av inspelningen och koden.
 
-### VG steg 2: Ta bort vädrets klient-side request waterfall
+### 2: Ta bort vädrets klient-side request waterfall
 
 I startlösningen hämtas vädernotisen från klienten efter hydration. För VG ska
 du undersöka och förbättra den request-kedjan.
@@ -346,16 +344,6 @@ du undersöka och förbättra den request-kedjan.
 4. Använd en fallback som reserverar utrymme och inte orsakar CLS.
 5. Behåll felhantering så att eventlistan fungerar när API:t är nere.
 6. Jämför request-kedja, initial JavaScript och CLS före och efter.
-
-### VG steg 3: Fördjupa mätningen och reflektionen
-
-1. Kör mobilmätningen minst tre gånger före och efter.
-2. Redovisa ett representativt resultat och förklara hur du valde det.
-3. Förklara skillnaden mellan dina labbmätningar och fältdata från riktiga
-   besökare.
-4. Beskriv minst en avvägning mellan design, funktion och prestanda.
-
-### VG steg 4: Verifiera
 
 Kör den automatiska VG-kontrollen:
 
