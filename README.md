@@ -137,7 +137,7 @@ För varje observation ska du svara på:
 3. Hur påverkades användaren?
 4. Vilken förändring vill du prova?
 
-Undersök särskilt:
+Undersök:
 
 - varför LCP-elementet visas sent
 - om bilder är större än de behöver vara
