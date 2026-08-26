@@ -211,8 +211,10 @@ npm run build
 ### Automatisk rättning
 
 Vid varje push kör GitHub Actions projektets vanliga tester och några tekniska
-G-kontroller. Startkoden ska inte klara alla rättningskontroller – de blir
-gröna när prestandaproblemen åtgärdas.
+G-kontroller. De vanliga testerna är regressionskontroller: de är gröna i
+startkoden och kontrollerar att sökning, filtrering, detaljsidor och väderdata
+fortsätter fungera när du ändrar implementationen. Startkoden ska däremot inte
+klara alla G-kontroller – de blir gröna när prestandaproblemen åtgärdas.
 
 Kör samma kontroller lokalt:
 
